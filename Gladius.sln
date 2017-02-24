@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gladius", "Gladius.csproj", "{C37C3717-D6E9-43E2-88B1-86BC2F6E6FC0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhone = Release|iPhone
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C37C3717-D6E9-43E2-88B1-86BC2F6E6FC0}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{C37C3717-D6E9-43E2-88B1-86BC2F6E6FC0}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{C37C3717-D6E9-43E2-88B1-86BC2F6E6FC0}.Release|iPhone.ActiveCfg = Release|iPhone
+		{C37C3717-D6E9-43E2-88B1-86BC2F6E6FC0}.Release|iPhone.Build.0 = Release|iPhone
+		{C37C3717-D6E9-43E2-88B1-86BC2F6E6FC0}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{C37C3717-D6E9-43E2-88B1-86BC2F6E6FC0}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{C37C3717-D6E9-43E2-88B1-86BC2F6E6FC0}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{C37C3717-D6E9-43E2-88B1-86BC2F6E6FC0}.Debug|iPhone.Build.0 = Debug|iPhone
+	EndGlobalSection
+EndGlobal
