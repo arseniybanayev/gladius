@@ -29,7 +29,7 @@ namespace Gladius
 			return new Vector3D(X - point.X, Y - point.Y, Z - point.Z);
 		}
 
-		public void SetTo(Point3D point) {
+		public void MoveTo(Point3D point) {
 			X = point.X;
 			Y = point.Y;
 			Z = point.Z;
@@ -39,19 +39,29 @@ namespace Gladius
 		public double Y { get; private set; }
 		public double Z { get; private set; }
 
-		private SKNode _node;
+		protected SKNode SkNode;
 
 		public virtual void Draw(GameScene scene) {
-			if (_node == null) {
-				_node = new SKSpriteNode(SKTexture.FromImageNamed("Ball"), UIColor.Clear, new CGSize(5, 5));
-				scene.AddChild(_node);
+			if (SkNode == null) {
+				SkNode = new SKSpriteNode(SKTexture.FromImageNamed("Ball"), UIColor.Clear, new CGSize(5, 5));
+				scene.AddChild(SkNode);
 			}
 
-			_node.RunAction(SKAction.MoveTo(new CGPoint(X - (Z / Math.Sqrt(2.0)), Y - (Z / Math.Sqrt(2.0))), 0.5));
+			SkNode.RunAction(SKAction.MoveTo(new CGPoint(X - (Z / Math.Sqrt(2.0)), Y - (Z / Math.Sqrt(2.0))), 0.5));
 		}
 
 		public void Undraw() {
-			_node?.RemoveFromParent();
+			SkNode?.RemoveFromParent();
+		}
+
+		public static Point3D operator +(Point3D point, Vector3D vector) {
+			return new Point3D(point.X + vector.X,
+							   point.Y + vector.Y,
+							   point.Z + vector.Z);
+		}
+
+		public static Point3D operator -(Point3D point, Vector3D vector) {
+			return point + -vector;
 		}
 	}
 
@@ -62,8 +72,10 @@ namespace Gladius
 		YZ
 	}
 
-	public struct Vector3D
+	public class Vector3D
 	{
+		public static Vector3D Zero => new Vector3D(0, 0, 0);
+
 		public static Vector3D operator -(Vector3D vector) {
 			return new Vector3D(-vector.X, -vector.Y, -vector.Z);
 		}
@@ -129,9 +141,9 @@ namespace Gladius
 				Z * scalingVector.Z);
 		}
 
-		public double X { get; }
-		public double Y { get; }
-		public double Z { get; }
+		public virtual double X { get; }
+		public virtual double Y { get; }
+		public virtual double Z { get; }
 	}
 
 	public static class MathExtensions

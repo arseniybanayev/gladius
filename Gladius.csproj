@@ -114,6 +114,7 @@
     <Compile Include="GameScene.cs" />
     <Compile Include="3D.cs" />
     <Compile Include="SKButtonNode.cs" />
+    <Compile Include="Node.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

@@ -72,13 +72,13 @@ namespace Gladius
 			buttonNode.Position = new CGPoint(-150, 0);
 			AddChild(buttonNode);
 
-			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XZ, -45));
+			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XZ, 45));
 			buttonNode.ZRotation = (nfloat)(-135.0).ToRadians();
 			buttonNode.Size = new CGSize(40, 40);
 			buttonNode.Position = new CGPoint(-200, 50);
 			AddChild(buttonNode);
 
-			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XZ, 45));
+			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XZ, -45));
 			buttonNode.ZRotation = (nfloat)135.0.ToRadians();
 			buttonNode.XScale = (nfloat)(-1.0);
 			buttonNode.Size = new CGSize(40, 40);
@@ -91,7 +91,7 @@ namespace Gladius
 				var vector = point.Subtract(Point3D.Zero).Rotate(plane, degrees);
 				var zero = Point3D.Zero;
 				zero.Add(vector);
-				point.SetTo(zero);
+				point.MoveTo(zero);
 				point.Draw(this);
 			}
 		}
@@ -102,18 +102,35 @@ namespace Gladius
 
 		public override void DidMoveToView(SKView view) {
 			BackgroundColor = UIColor.White;
-
 			AddAxes();
-			AddButtons();
 
-			// Setup and draw 100 points
-			_points.AddRange(Enumerable.Repeat(1, 100)
-				.Select(_ => new Point3D(
-								 (_random.NextDouble() - 0.5) * 100,
-								 (_random.NextDouble() - 0.5) * 100,
-								 (_random.NextDouble() - 0.5) * 100)));
-			foreach (var point in _points)
-				point.Draw(this);
+			var x = 1 + 1;
+			if (x == 2) {
+				// Demo 1: Rotate 100 randomly scattered points around any of the three axes
+				AddButtons();
+
+				_points.AddRange(Enumerable.Repeat(1, 100)
+					.Select(_ => new Point3D(
+									 (_random.NextDouble() - 0.5) * 100,
+									 (_random.NextDouble() - 0.5) * 100,
+									 (_random.NextDouble() - 0.5) * 100)));
+				foreach (var point in _points)
+					point.Draw(this);
+			} else {
+				// Demo 2: Show the node graph
+				var root = Node.Zero;
+				var nodes = new List<Node> { root };
+				for (var i = 0; i < 1; i++) {
+					nodes.AddRange(nodes.SelectMany(n => {
+						var a = new Node(n, new Vector3D(10, 0, 0));
+						var b = new Node(n, new Vector3D(0, 10, 0));
+						var c = new Node(n, new Vector3D(0, 0, 10));
+						return new[] { a, b, c };
+					}).ToList());
+				}
+
+				root.Draw(this);
+			}
 		}
 	}
 }
