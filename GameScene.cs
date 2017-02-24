@@ -1,50 +1,119 @@
-﻿using System;
-
-using CoreGraphics;
-using Foundation;
-using SpriteKit;
+﻿using SpriteKit;
 using UIKit;
+using CoreGraphics;
+using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Gladius
 {
 	public class GameScene : SKScene
 	{
-		protected GameScene(IntPtr handle) : base(handle) {
-			// Note: this .ctor should not contain any initialization logic.
+		public GameScene() {
+			AnchorPoint = new CGPoint(0.5, 0.5);
 		}
 
-		public override void DidMoveToView(SKView view) {
-			// Setup your scene here
-			var myLabel = new SKLabelNode("Chalkduster") {
-				Text = "Hello, World!",
-				FontSize = 50,
-				Position = new CGPoint(Frame.Width / 2, Frame.Height / 2)
-			};
+		private void AddAxes() {
+			CGPath pathToDraw;
+			var center = new CGPoint(0, 0);
 
-			AddChild(myLabel);
+			var xAxis = new SKShapeNode();
+			pathToDraw = new CGPath();
+			pathToDraw.MoveToPoint(center);
+			pathToDraw.AddLineToPoint(new CGPoint(1000, 0));
+			xAxis.Path = pathToDraw;
+			xAxis.StrokeColor = UIColor.LightGray;
+			xAxis.LineWidth = 2;
+			AddChild(xAxis);
+
+			var yAxis = new SKShapeNode();
+			pathToDraw = new CGPath();
+			pathToDraw.MoveToPoint(center);
+			pathToDraw.AddLineToPoint(new CGPoint(0, 1000));
+			yAxis.Path = pathToDraw;
+			yAxis.StrokeColor = UIColor.LightGray;
+			yAxis.LineWidth = 2;
+			AddChild(yAxis);
+
+			var zAxis = new SKShapeNode();
+			pathToDraw = new CGPath();
+			pathToDraw.MoveToPoint(center);
+			pathToDraw.AddLineToPoint(new CGPoint(center.X - 1000, center.Y - 1000));
+			zAxis.Path = pathToDraw;
+			zAxis.StrokeColor = UIColor.LightGray;
+			zAxis.LineWidth = 2;
+			AddChild(zAxis);
 		}
 
-		public override void TouchesBegan(NSSet touches, UIEvent evt) {
-			// Called when a touch begins
-			foreach (var touch in touches) {
-				var location = ((UITouch)touch).LocationInNode(this);
+		private void AddButtons() {
+			var buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XY, -45));
+			buttonNode.Size = new CGSize(40, 40);
+			buttonNode.Position = new CGPoint(-200, -50);
+			AddChild(buttonNode);
 
-				var sprite = new SKSpriteNode("Spaceship") {
-					Position = location,
-					XScale = 0.5f,
-					YScale = 0.5f
-				};
+			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XY, 45));
+			buttonNode.XScale = (nfloat)(-1.0);
+			buttonNode.ZRotation = (nfloat)(-90.0).ToRadians();
+			buttonNode.Size = new CGSize(40, 40);
+			buttonNode.Position = new CGPoint(-150, -50);
+			AddChild(buttonNode);
 
-				var action = SKAction.RotateByAngle(NMath.PI, 1.0);
+			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.YZ, -45));
+			buttonNode.ZRotation = (nfloat)135.0.ToRadians();
+			buttonNode.Size = new CGSize(40, 40);
+			buttonNode.Position = new CGPoint(-200, 0);
+			AddChild(buttonNode);
 
-				sprite.RunAction(SKAction.RepeatActionForever(action));
+			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.YZ, 45));
+			buttonNode.ZRotation = (nfloat)45.0.ToRadians();
+			buttonNode.XScale = (nfloat)(-1.0);
+			buttonNode.Size = new CGSize(40, 40);
+			buttonNode.Position = new CGPoint(-150, 0);
+			AddChild(buttonNode);
 
-				AddChild(sprite);
+			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XZ, -45));
+			buttonNode.ZRotation = (nfloat)(-135.0).ToRadians();
+			buttonNode.Size = new CGSize(40, 40);
+			buttonNode.Position = new CGPoint(-200, 50);
+			AddChild(buttonNode);
+
+			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XZ, 45));
+			buttonNode.ZRotation = (nfloat)135.0.ToRadians();
+			buttonNode.XScale = (nfloat)(-1.0);
+			buttonNode.Size = new CGSize(40, 40);
+			buttonNode.Position = new CGPoint(-150, 50);
+			AddChild(buttonNode);
+		}
+
+		private void Rotate(Plane plane, double degrees) {
+			foreach (var point in _points) {
+				var vector = point.Subtract(Point3D.Zero).Rotate(plane, degrees);
+				var zero = Point3D.Zero;
+				zero.Add(vector);
+				point.SetTo(zero);
+				point.Draw(this);
 			}
 		}
 
-		public override void Update(double currentTime) {
-			// Called before each frame is rendered
+		private static readonly Random _random = new Random();
+
+		private readonly List<Point3D> _points = new List<Point3D>();
+
+		public override void DidMoveToView(SKView view) {
+			BackgroundColor = UIColor.White;
+
+			AddAxes();
+			AddButtons();
+
+			// Setup and draw 100 points
+			_points.AddRange(Enumerable.Repeat(1, 100)
+				.Select(_ => new Point3D(
+								 (_random.NextDouble() - 0.5) * 100,
+								 (_random.NextDouble() - 0.5) * 100,
+								 (_random.NextDouble() - 0.5) * 100)));
+			foreach (var point in _points)
+				point.Draw(this);
 		}
 	}
 }

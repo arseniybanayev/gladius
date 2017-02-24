@@ -1,49 +1,23 @@
-﻿using System;
-
+﻿using UIKit;
 using SpriteKit;
-using UIKit;
 
 namespace Gladius
 {
-	public partial class GameViewController : UIViewController
+	public class GameViewController : UIViewController
 	{
-		protected GameViewController(IntPtr handle) : base(handle) {
-			// Note: this .ctor should not contain any initialization logic.
+		public override void LoadView() {
+			View = new SKView();
 		}
 
 		public override void ViewDidLoad() {
 			base.ViewDidLoad();
-
-			// Configure the view.
-			var skView = (SKView)View;
-			skView.ShowsFPS = true;
-			skView.ShowsNodeCount = true;
-			/* Sprite Kit applies additional optimizations to improve rendering performance */
+			var scene = new GameScene();
+			var skView = View as SKView;
 			skView.IgnoresSiblingOrder = true;
-
-			// Create and configure the scene.
-			var scene = SKNode.FromFile<GameScene>("GameScene");
-			scene.ScaleMode = SKSceneScaleMode.AspectFill;
-
-			// Present the scene.
+			scene.ScaleMode = SKSceneScaleMode.ResizeFill;
 			skView.PresentScene(scene);
 		}
 
-		public override bool ShouldAutorotate() {
-			return true;
-		}
-
-		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations() {
-			return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone ? UIInterfaceOrientationMask.AllButUpsideDown : UIInterfaceOrientationMask.All;
-		}
-
-		public override void DidReceiveMemoryWarning() {
-			base.DidReceiveMemoryWarning();
-			// Release any cached data, images, etc that aren't in use.
-		}
-
-		public override bool PrefersStatusBarHidden() {
-			return true;
-		}
+		public override bool PrefersStatusBarHidden() => true;
 	}
 }

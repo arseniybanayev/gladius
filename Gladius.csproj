@@ -92,19 +92,16 @@
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\Spaceship.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\Spaceship.imageset\Spaceship.png" />
     <ImageAsset Include="Assets.xcassets\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Ball.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Rotate.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Ball.imageset\ball.png" />
+    <ImageAsset Include="Assets.xcassets\Rotate.imageset\rotateZ.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="GameScene.sks" />
-  </ItemGroup>
-  <ItemGroup>
-    <InterfaceDefinition Include="LaunchScreen.storyboard" />
-    <InterfaceDefinition Include="Main.storyboard" />
+    <Folder Include="Assets.xcassets\Ball.imageset\" />
+    <Folder Include="Assets.xcassets\Rotate.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -114,10 +111,9 @@
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="GameViewController.cs" />
-    <Compile Include="GameViewController.designer.cs">
-      <DependentUpon>GameViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="GameScene.cs" />
+    <Compile Include="3D.cs" />
+    <Compile Include="SKButtonNode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

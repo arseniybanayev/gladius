@@ -8,17 +8,12 @@ namespace Gladius
 	[Register("AppDelegate")]
 	public class AppDelegate : UIApplicationDelegate
 	{
-		// class-level declarations
-
-		public override UIWindow Window {
-			get;
-			set;
-		}
+		public override UIWindow Window { get; set; }
 
 		public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
-			// Override point for customization after application launch.
-			// If not required for your application you can safely delete this method
-
+			Window = new UIWindow(UIScreen.MainScreen.Bounds);
+			Window.RootViewController = new GameViewController();
+			Window.MakeKeyAndVisible();
 			return true;
 		}
 
@@ -49,4 +44,3 @@ namespace Gladius
 		}
 	}
 }
-
