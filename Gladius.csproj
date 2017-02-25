@@ -89,6 +89,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
+    <Reference Include="MathNet.Numerics">
+      <HintPath>packages\MathNet.Numerics.3.17.0\lib\portable-net45+netcore45+MonoAndroid1+MonoTouch1\MathNet.Numerics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
@@ -106,6 +109,7 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -116,6 +120,8 @@
     <Compile Include="SKButtonNode.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="BVH.cs" />
+    <Compile Include="Transformation.cs" />
+    <Compile Include="NodeWithMotionData.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Male1_A1_Stand.bvh">

@@ -1,77 +1,135 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CoreGraphics;
 using SpriteKit;
 using UIKit;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Gladius
 {
-	public class BodyWithPreloadedMotion
+	/// <summary>
+	/// Represents a member in a tree definition of a body, specifying an offset from its parent
+	/// and propagating any transformations to its children.
+	/// </summary>
+	public class Node
 	{
-		public IReadOnlyList<Node> Roots { get; }
+		/// <summary>
+		/// Creates an orphan/root node at the origin.
+		/// </summary>
+		public static Node NewZeroRoot => new Node(null, new DenseVector(new double[] { 0, 0, 0 }));
 
-		private readonly BVH _bvh;
+		/// <summary>
+		/// Creates an orphan/root node with the specified offset from the origin.
+		/// </summary>
+		public static Node NewRoot(Vector<double> offsetFromZero) => new Node(null, offsetFromZero);
 
-		public BodyWithPreloadedMotion(BVH bvh) {
-			_bvh = bvh;
-			Roots = _bvh.Roots.Select(Node.FromBVHNode).ToList();
-			throw new NotImplementedException();
-		}
-	}
-
-	public class Node : Point3D
-	{
-		private static Node FromBVHNodeImpl(BVH.BVHNode bvhNode, Node parent = null) {
-			var node = new Node(parent, bvhNode.Offset);
-			foreach (var bvhChild in bvhNode.Children)
-				FromBVHNodeImpl(bvhChild, node);
-			return node;
-		}
-
-		public static Node FromBVHNode(BVH.BVHNode bvhNode) {
-			return FromBVHNodeImpl(bvhNode);
+		/// <summary>
+		/// Creates a new node with the specified offset from this node.
+		/// All transformations applied to this node will be applied to the
+		/// new child node, too.
+		/// </summary>
+		public Node CreateAndAddChild(Vector<double> offset) {
+			var newChild = new Node(this, offset);
+			_children.Add(newChild);
+			return newChild;
 		}
 
-		public static new Node Zero => new Node(null, Vector3D.Zero);
+		/// <summary>
+		/// Gets the parent.
+		/// </summary>
+		public Node Parent { get; protected set; }
 
-		public Node(Node parent, Vector3D distance) : base(0, 0, 0) {
-			parent?.AddChild(this);
-			MoveTo((parent ?? this) + distance);
+		/// <summary>
+		/// Children to which all transformations are applied recursively.
+		/// </summary>
+		public IEnumerable<Node> Children => _children;
+
+		protected Node(Node parent, Vector<double> offset) {
+			Parent = parent;
+			Offset = offset;
 		}
 
-		public IEnumerable<Node> Children => _children.Keys;
-		private readonly Dictionary<Node, SKShapeNode> _children = new Dictionary<Node, SKShapeNode>();
+		protected readonly List<Node> _children = new List<Node>();
 
-		public Node Parent { get; private set; }
+		/// <summary>
+		/// Offset from its parent.
+		/// </summary>
+		public Vector<double> Offset { get; private set; }
 
-		public void AddChild(Node child) {
-			_children[child] = null;
-			child.Parent = this;
+		/// <summary>
+		/// Total offset from the origin, accounting for parents.
+		/// </summary>
+		public Vector<double> OffsetFromZero {
+			get {
+				var node = this;
+				var offset = Offset;
+				while (node.Parent != null) {
+					node = node.Parent;
+					offset += node.Offset;
+				}
+
+				return offset;
+			}
 		}
 
-		public override void Draw(GameScene scene) {
-			base.Draw(scene);
-			foreach (var child in Children.ToList()) {
+		/// <summary>
+		/// Recursively applies the supplied transformation to itself and its children.
+		/// </summary>
+		public void ApplyTransformation(Matrix<double> transformation) {
+			Offset *= transformation;
+			foreach (var child in Children)
+				child.ApplyTransformation(transformation);
+		}
+
+		private SKNode _skNode;
+		public void Draw(SKScene scene) {
+			if (_skNode == null) {
+				_skNode = new SKSpriteNode(SKTexture.FromImageNamed("Ball"), UIColor.Clear, new CGSize(5, 5));
+				scene.AddChild(_skNode);
+			}
+
+			_skNode.RunAction(SKAction.MoveTo(new CGPoint(
+				OffsetFromZero[0] - (OffsetFromZero[2] / Math.Sqrt(2.0)),
+				OffsetFromZero[1] - (OffsetFromZero[2] / Math.Sqrt(2.0))), 0.5));
+
+			foreach (var child in Children)
 				child.Draw(scene);
-				DrawLineSegment(child, scene);
-			}
 		}
 
-		private void DrawLineSegment(Node child, GameScene scene) {
-			if (_children[child] != null) {
-				_children[child].RemoveFromParent();
-				_children[child] = null;
-			}
+		//private static Node FromBVHNodeImpl(BVH.BVHNode bvhNode, Node parent = null) {
+		//	var node = new Node(parent, bvhNode.Offset);
+		//	foreach (var bvhChild in bvhNode.Children)
+		//		FromBVHNodeImpl(bvhChild, node);
+		//	return node;
+		//}
 
-			var line = _children[child] = new SKShapeNode();
-			var path = new CGPath();
-			path.MoveToPoint(SkNode.Position);
-			path.AddLineToPoint(child.SkNode.Position);
-			line.Path = path;
-			line.StrokeColor = UIColor.LightGray;
-			line.LineWidth = 2;
-			scene.AddChild(line);
-		}
+		//public static Node FromBVHNode(BVH.BVHNode bvhNode) {
+		//	return FromBVHNodeImpl(bvhNode);
+		//}
+
+		//public override void Draw(GameScene scene) {
+		//	base.Draw(scene);
+		//	foreach (var child in Children.ToList()) {
+		//		child.Draw(scene);
+		//		DrawLineSegment(child, scene);
+		//	}
+		//}
+
+		//private void DrawLineSegment(Node child, GameScene scene) {
+		//	if (_children[child] != null) {
+		//		_children[child].RemoveFromParent();
+		//		_children[child] = null;
+		//	}
+
+		//	var line = _children[child] = new SKShapeNode();
+		//	var path = new CGPath();
+		//	path.MoveToPoint(SkNode.Position);
+		//	path.AddLineToPoint(child.SkNode.Position);
+		//	line.Path = path;
+		//	line.StrokeColor = UIColor.LightGray;
+		//	line.LineWidth = 2;
+		//	scene.AddChild(line);
+		//}
 	}
 }

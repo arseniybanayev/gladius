@@ -2,12 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using Foundation;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace Gladius
 {
+	/// <summary>
+	/// Helper class that parses BVH files and constructs nodes with motion data.
+	/// </summary>
 	public class BVH
 	{
+		/// <summary>
+		/// Opens the specified BVH file and constructs nodes with motion data,
+		/// accessible by getting the Roots property.
+		/// </summary>
 		public BVH(string bvhName) {
+			if (bvhName.EndsWith(".bvh", StringComparison.InvariantCultureIgnoreCase))
+				bvhName = bvhName.Substring(0, bvhName.Length - 4);
 			var path = NSBundle.MainBundle.PathForResource(bvhName, "bvh");
 			var fm = new NSFileManager();
 			if (path == null || !fm.FileExists(path))
@@ -41,33 +52,29 @@ namespace Gladius
 			}
 		}
 
-		public List<BVHNode> Roots { get; } = new List<BVHNode>();
+		public List<NodeWithMotionData> Roots { get; } = new List<NodeWithMotionData>();
 
 		public double FrameTimeSecs { get; }
 
-		private List<BVHChannel> _channels = new List<BVHChannel>();
+		private List<NodeWithMotionData.Channel> _channels = new List<NodeWithMotionData.Channel>();
 
-		private BVHNode ParseNode(string[] lines, ref int lineCounter) {
-			var node = new BVHNode();
-
+		private NodeWithMotionData ParseNode(string[] lines, ref int lineCounter, NodeWithMotionData parent = null) {
 			// first line, e.g. "ROOT Hips" or "JOINT Spine"
 			var line = lines[lineCounter];
 			var trimmed = line.TrimStart(' ');
 
+			var endSite = false;
 			string name = null;
 			if (trimmed.StartsWith("ROOT", StringComparison.InvariantCulture)) {
-				node.Type = BVHNodeType.Root;
 				if (trimmed.Length > 5)
 					name = trimmed.Substring(5);
 			} else if (trimmed.StartsWith("JOINT", StringComparison.InvariantCulture)) {
-				node.Type = BVHNodeType.Joint;
 				if (trimmed.Length > 6)
 					name = trimmed.Substring(6);
 			} else if (line.Contains("End Site"))
-				node.Type = BVHNodeType.EndSite;
+				endSite = true;
 			else
 				throw new Exception($"Encountered invalid line: {line}");
-			node.Name = name;
 
 			// second line, "{"
 			lineCounter++;
@@ -87,66 +94,31 @@ namespace Gladius
 				.Skip(1)
 				.Select(double.Parse)
 				.ToArray();
-			node.Offset = new Vector3D(offsetParts[0], offsetParts[1], offsetParts[2]);
 
-			if (node.Type != BVHNodeType.EndSite) {
+			List<NodeWithMotionData.Channel> channels = null;
+			if (!endSite) {
 				// fourth line, "CHANNELS ..."
 				lineCounter++;
 				line = lines[lineCounter];
 				trimmed = line.TrimStart(' ');
 				if (!trimmed.StartsWith("CHANNELS", StringComparison.InvariantCulture))
 					throw new Exception($"Encountered invalid line: {line}");
-				var channels = trimmed.Split(' ').Skip(2)
-					.Select(str => (BVHChannelType)Enum.Parse(typeof(BVHChannelType), str))
-					.Select(t => new BVHChannel { Type = t }).ToArray();
-				node.Channels = channels;
+				channels = trimmed.Split(' ').Skip(2)
+					.Select(str => (NodeWithMotionData.ChannelType)Enum.Parse(typeof(NodeWithMotionData.ChannelType), str))
+					.Select(t => new NodeWithMotionData.Channel { Type = t }).ToList();
 				_channels.AddRange(channels); // allows referencing the channels later during motion in the order they were defined
 			}
 
-			var children = new List<BVHNode>();
+			var node = new NodeWithMotionData(parent, new DenseVector(offsetParts), channels, name);
 			while (true) {
 				lineCounter++;
 				line = lines[lineCounter];
 				trimmed = line.TrimStart(' ');
 				if (!string.Equals(trimmed, "}", StringComparison.InvariantCulture))
-					children.Add(ParseNode(lines, ref lineCounter));
-				else {
-					node.Children = children;
+					node.AddChild(ParseNode(lines, ref lineCounter, node));
+				else
 					return node;
-				}
 			}
-		}
-
-		public enum BVHNodeType
-		{
-			Root,
-			Joint,
-			EndSite
-		}
-
-		public enum BVHChannelType
-		{
-			Xposition,
-			Yposition,
-			Zposition,
-			Zrotation,
-			Xrotation,
-			Yrotation
-		}
-
-		public class BVHChannel
-		{
-			public BVHChannelType Type;
-			public List<double> Motions = new List<double>();
-		}
-
-		public class BVHNode
-		{
-			public BVHNodeType Type;
-			public string Name;
-			public Vector3D Offset;
-			public IReadOnlyList<BVHChannel> Channels;
-			public IReadOnlyList<BVHNode> Children;
 		}
 	}
 }

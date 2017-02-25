@@ -119,8 +119,7 @@ namespace Gladius
 			} else {
 				// Demo 2: Show the node graph
 				var bvh = new BVH("Male1_A1_Stand");
-				var roots = bvh.Roots.Select(Node.FromBVHNode).ToList();
-				foreach (var root in roots)
+				foreach (var root in bvh.Roots)
 					root.Draw(this);
 			}
 		}
