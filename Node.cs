@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CoreGraphics;
 using SpriteKit;
@@ -6,22 +7,30 @@ using UIKit;
 
 namespace Gladius
 {
-	public class Body
+	public class BodyWithPreloadedMotion
 	{
-		public Node Root { get; private set; }
+		public IReadOnlyList<Node> Roots { get; }
 
-		public Body(BVH bvh) {
-			
+		private readonly BVH _bvh;
+
+		public BodyWithPreloadedMotion(BVH bvh) {
+			_bvh = bvh;
+			Roots = _bvh.Roots.Select(Node.FromBVHNode).ToList();
+			throw new NotImplementedException();
 		}
 	}
 
 	public class Node : Point3D
 	{
-		public static Node FromBVHNode(BVH.BVHNode bvhNode, Node parent = null) {
+		private static Node FromBVHNodeImpl(BVH.BVHNode bvhNode, Node parent = null) {
 			var node = new Node(parent, bvhNode.Offset);
 			foreach (var bvhChild in bvhNode.Children)
-				FromBVHNode(bvhChild, node);
+				FromBVHNodeImpl(bvhChild, node);
 			return node;
+		}
+
+		public static Node FromBVHNode(BVH.BVHNode bvhNode) {
+			return FromBVHNodeImpl(bvhNode);
 		}
 
 		public static new Node Zero => new Node(null, Vector3D.Zero);

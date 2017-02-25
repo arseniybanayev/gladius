@@ -28,12 +28,26 @@ namespace Gladius
 			if (!string.Equals(lines[lineCounter], "MOTION"))
 				throw new Exception($"Expected MOTION but encountered invalid line: {lines[lineCounter]}");
 
-			// TODO: parse MOTION
+			lineCounter += 2; // skip the "Frames: x" line and get "Frame Time: y"
+			FrameTimeSecs = double.Parse(lines[lineCounter].Split('\t')[1]);
+
+			lineCounter++;
+			for (; lineCounter < lines.Length; lineCounter++) {
+				var motions = lines[lineCounter]
+					.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+					.Select(double.Parse).ToList();
+				for (var i = 0; i < motions.Count; i++)
+					_channels[i].Motions.Add(motions[i]);
+			}
 		}
 
 		public List<BVHNode> Roots { get; } = new List<BVHNode>();
 
-		private static BVHNode ParseNode(string[] lines, ref int lineCounter) {
+		public double FrameTimeSecs { get; }
+
+		private List<BVHChannel> _channels = new List<BVHChannel>();
+
+		private BVHNode ParseNode(string[] lines, ref int lineCounter) {
 			var node = new BVHNode();
 
 			// first line, e.g. "ROOT Hips" or "JOINT Spine"
@@ -72,7 +86,6 @@ namespace Gladius
 				.Split(' ')
 				.Skip(1)
 				.Select(double.Parse)
-				.Select(d => d * 1.5)
 				.ToArray();
 			node.Offset = new Vector3D(offsetParts[0], offsetParts[1], offsetParts[2]);
 
@@ -83,7 +96,11 @@ namespace Gladius
 				trimmed = line.TrimStart(' ');
 				if (!trimmed.StartsWith("CHANNELS", StringComparison.InvariantCulture))
 					throw new Exception($"Encountered invalid line: {line}");
-				node.Channels = trimmed.Split(' ').Skip(2).Select(str => (BVHChannel)Enum.Parse(typeof(BVHChannel), str)).ToArray();
+				var channels = trimmed.Split(' ').Skip(2)
+					.Select(str => (BVHChannelType)Enum.Parse(typeof(BVHChannelType), str))
+					.Select(t => new BVHChannel { Type = t }).ToArray();
+				node.Channels = channels;
+				_channels.AddRange(channels); // allows referencing the channels later during motion in the order they were defined
 			}
 
 			var children = new List<BVHNode>();
@@ -107,7 +124,7 @@ namespace Gladius
 			EndSite
 		}
 
-		public enum BVHChannel
+		public enum BVHChannelType
 		{
 			Xposition,
 			Yposition,
@@ -115,6 +132,12 @@ namespace Gladius
 			Zrotation,
 			Xrotation,
 			Yrotation
+		}
+
+		public class BVHChannel
+		{
+			public BVHChannelType Type;
+			public List<double> Motions = new List<double>();
 		}
 
 		public class BVHNode
