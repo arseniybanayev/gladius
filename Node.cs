@@ -6,6 +6,15 @@ using UIKit;
 
 namespace Gladius
 {
+	public class Body
+	{
+		public Node Root { get; private set; }
+
+		public Body(BVH bvh) {
+			
+		}
+	}
+
 	public class Node : Point3D
 	{
 		public static new Node Zero => new Node(null, Vector3D.Zero);

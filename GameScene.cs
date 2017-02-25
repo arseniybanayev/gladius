@@ -104,7 +104,7 @@ namespace Gladius
 			BackgroundColor = UIColor.White;
 			AddAxes();
 
-			var x = 1 + 1;
+			var x = 1 + 2;
 			if (x == 2) {
 				// Demo 1: Rotate 100 randomly scattered points around any of the three axes
 				AddButtons();
@@ -118,18 +118,7 @@ namespace Gladius
 					point.Draw(this);
 			} else {
 				// Demo 2: Show the node graph
-				var root = Node.Zero;
-				var nodes = new List<Node> { root };
-				for (var i = 0; i < 1; i++) {
-					nodes.AddRange(nodes.SelectMany(n => {
-						var a = new Node(n, new Vector3D(10, 0, 0));
-						var b = new Node(n, new Vector3D(0, 10, 0));
-						var c = new Node(n, new Vector3D(0, 0, 10));
-						return new[] { a, b, c };
-					}).ToList());
-				}
-
-				root.Draw(this);
+				var bvh = new BVH("Male1_A1_Stand");
 			}
 		}
 	}

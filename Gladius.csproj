@@ -115,6 +115,12 @@
     <Compile Include="3D.cs" />
     <Compile Include="SKButtonNode.cs" />
     <Compile Include="Node.cs" />
+    <Compile Include="BVH.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Male1_A1_Stand.bvh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
