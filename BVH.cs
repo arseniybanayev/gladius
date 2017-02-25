@@ -48,17 +48,17 @@ namespace Gladius
 					.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
 					.Select(double.Parse).ToList();
 				for (var i = 0; i < motions.Count; i++)
-					_channels[i].Motions.Add(motions[i]);
+					_channels.ElementAt(i).Key.Motions.Add(motions[i]);
 			}
 		}
 
-		public List<NodeWithMotionData> Roots { get; } = new List<NodeWithMotionData>();
+		public List<Node> Roots { get; } = new List<Node>();
+
+		private Dictionary<MotionChannel, Node> _channels = new Dictionary<MotionChannel, Node>();
 
 		public double FrameTimeSecs { get; }
 
-		private List<NodeWithMotionData.Channel> _channels = new List<NodeWithMotionData.Channel>();
-
-		private NodeWithMotionData ParseNode(string[] lines, ref int lineCounter, NodeWithMotionData parent = null) {
+		private Node ParseNode(string[] lines, ref int lineCounter, Node parent = null) {
 			// first line, e.g. "ROOT Hips" or "JOINT Spine"
 			var line = lines[lineCounter];
 			var trimmed = line.TrimStart(' ');
@@ -95,7 +95,8 @@ namespace Gladius
 				.Select(double.Parse)
 				.ToArray();
 
-			List<NodeWithMotionData.Channel> channels = null;
+			var node = parent == null ? Node.NewRoot(new DenseVector(offsetParts)) : parent.CreateAndAddChild(new DenseVector(offsetParts));
+			
 			if (!endSite) {
 				// fourth line, "CHANNELS ..."
 				lineCounter++;
@@ -103,19 +104,21 @@ namespace Gladius
 				trimmed = line.TrimStart(' ');
 				if (!trimmed.StartsWith("CHANNELS", StringComparison.InvariantCulture))
 					throw new Exception($"Encountered invalid line: {line}");
-				channels = trimmed.Split(' ').Skip(2)
-					.Select(str => (NodeWithMotionData.ChannelType)Enum.Parse(typeof(NodeWithMotionData.ChannelType), str))
-					.Select(t => new NodeWithMotionData.Channel { Type = t }).ToList();
-				_channels.AddRange(channels); // allows referencing the channels later during motion in the order they were defined
+
+				var channels = trimmed
+					.Split(' ').Skip(2)
+					.Select(str => (MotionChannelType)Enum.Parse(typeof(MotionChannelType), str))
+					.Select(t => new MotionChannel { Type = t }).ToList();
+				foreach (var channel in channels)
+					_channels[channel] = node;
 			}
 
-			var node = new NodeWithMotionData(parent, new DenseVector(offsetParts), channels, name);
 			while (true) {
 				lineCounter++;
 				line = lines[lineCounter];
 				trimmed = line.TrimStart(' ');
 				if (!string.Equals(trimmed, "}", StringComparison.InvariantCulture))
-					node.AddChild(ParseNode(lines, ref lineCounter, node));
+					ParseNode(lines, ref lineCounter, node);
 				else
 					return node;
 			}

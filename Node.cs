@@ -45,7 +45,7 @@ namespace Gladius
 		/// </summary>
 		public IEnumerable<Node> Children => _children;
 
-		protected Node(Node parent, Vector<double> offset) {
+		 Node(Node parent, Vector<double> offset) {
 			Parent = parent;
 			Offset = offset;
 		}
@@ -91,7 +91,7 @@ namespace Gladius
 
 			_skNode.RunAction(SKAction.MoveTo(new CGPoint(
 				OffsetFromZero[0] - (OffsetFromZero[2] / Math.Sqrt(2.0)),
-				OffsetFromZero[1] - (OffsetFromZero[2] / Math.Sqrt(2.0))), 0.5));
+				OffsetFromZero[1] - (OffsetFromZero[2] / Math.Sqrt(2.0))), 1.0 / 30.0));
 
 			foreach (var child in Children)
 				child.Draw(scene);

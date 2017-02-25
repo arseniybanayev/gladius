@@ -121,7 +121,7 @@
     <Compile Include="Node.cs" />
     <Compile Include="BVH.cs" />
     <Compile Include="Transformation.cs" />
-    <Compile Include="NodeWithMotionData.cs" />
+    <Compile Include="MotionChannel.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Male1_A1_Stand.bvh">

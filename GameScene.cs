@@ -117,10 +117,12 @@ namespace Gladius
 				foreach (var point in _points)
 					point.Draw(this);
 			} else {
-				// Demo 2: Show the node graph
+				// Demo 2: Play the BVH file
 				var bvh = new BVH("Male1_A1_Stand");
-				foreach (var root in bvh.Roots)
+				foreach (var root in bvh.Roots) {
 					root.Draw(this);
+					
+				}
 			}
 		}
 	}
