@@ -17,15 +17,21 @@ namespace Gladius
 			var lines = contents.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
 			var lineCounter = 1; // start with first line of hierarchy, which should be ROOT
-			Root = ParseNode(lines, ref lineCounter);
 
-			lineCounter++; // now we're at "MOTION", and let's skip that
-			lineCounter++;
+			while (true) {
+				Roots.Add(ParseNode(lines, ref lineCounter));
+				lineCounter++;
+				if (!lines[lineCounter].TrimStart(' ').StartsWith("ROOT", StringComparison.InvariantCulture))
+					break;
+			}
+
+			if (!string.Equals(lines[lineCounter], "MOTION"))
+				throw new Exception($"Expected MOTION but encountered invalid line: {lines[lineCounter]}");
 
 			// TODO: parse MOTION
 		}
 
-		public BVHNode Root { get; }
+		public List<BVHNode> Roots { get; } = new List<BVHNode>();
 
 		private static BVHNode ParseNode(string[] lines, ref int lineCounter) {
 			var node = new BVHNode();
@@ -62,8 +68,13 @@ namespace Gladius
 			trimmed = line.TrimStart(' ');
 			if (!trimmed.StartsWith("OFFSET", StringComparison.InvariantCulture))
 				throw new Exception($"Encountered invalid line: {line}");
-			var offsetParts = trimmed.Split(' ').Skip(1).Select(double.Parse).ToArray();
-			node.Offset = new Point3D(offsetParts[0], offsetParts[1], offsetParts[2]);
+			var offsetParts = trimmed
+				.Split(' ')
+				.Skip(1)
+				.Select(double.Parse)
+				.Select(d => d * 1.5)
+				.ToArray();
+			node.Offset = new Vector3D(offsetParts[0], offsetParts[1], offsetParts[2]);
 
 			if (node.Type != BVHNodeType.EndSite) {
 				// fourth line, "CHANNELS ..."
@@ -106,11 +117,11 @@ namespace Gladius
 			Yrotation
 		}
 
-		public struct BVHNode
+		public class BVHNode
 		{
 			public BVHNodeType Type;
 			public string Name;
-			public Point3D Offset;
+			public Vector3D Offset;
 			public IReadOnlyList<BVHChannel> Channels;
 			public IReadOnlyList<BVHNode> Children;
 		}

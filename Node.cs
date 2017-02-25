@@ -17,6 +17,13 @@ namespace Gladius
 
 	public class Node : Point3D
 	{
+		public static Node FromBVHNode(BVH.BVHNode bvhNode, Node parent = null) {
+			var node = new Node(parent, bvhNode.Offset);
+			foreach (var bvhChild in bvhNode.Children)
+				FromBVHNode(bvhChild, node);
+			return node;
+		}
+
 		public static new Node Zero => new Node(null, Vector3D.Zero);
 
 		public Node(Node parent, Vector3D distance) : base(0, 0, 0) {
