@@ -127,6 +127,7 @@
     <BundleResource Include="Male1_A1_Stand.bvh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </BundleResource>
+    <BundleResource Include="Male1_A12_CrawlBackward.bvh" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

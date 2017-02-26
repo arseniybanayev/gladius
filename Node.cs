@@ -45,12 +45,12 @@ namespace Gladius
 		/// </summary>
 		public IEnumerable<Node> Children => _children;
 
-		 Node(Node parent, Vector<double> offset) {
+		private Node(Node parent, Vector<double> offset) {
 			Parent = parent;
 			Offset = offset;
 		}
 
-		protected readonly List<Node> _children = new List<Node>();
+		private readonly List<Node> _children = new List<Node>();
 
 		/// <summary>
 		/// Offset from its parent.
@@ -69,21 +69,21 @@ namespace Gladius
 					offset += node.Offset;
 				}
 
-				return offset;
+				return offset / 3.0;
 			}
 		}
 
 		/// <summary>
 		/// Recursively applies the supplied transformation to itself and its children.
 		/// </summary>
-		public void ApplyTransformation(Matrix<double> transformation) {
+		public void ApplyTransformation(Matrix<double> transformation, bool append = false) {
 			Offset *= transformation;
 			foreach (var child in Children)
 				child.ApplyTransformation(transformation);
 		}
 
 		private SKNode _skNode;
-		public void Draw(SKScene scene) {
+		public void Draw(SKScene scene, double sec) {
 			if (_skNode == null) {
 				_skNode = new SKSpriteNode(SKTexture.FromImageNamed("Ball"), UIColor.Clear, new CGSize(5, 5));
 				scene.AddChild(_skNode);
@@ -91,10 +91,10 @@ namespace Gladius
 
 			_skNode.RunAction(SKAction.MoveTo(new CGPoint(
 				OffsetFromZero[0] - (OffsetFromZero[2] / Math.Sqrt(2.0)),
-				OffsetFromZero[1] - (OffsetFromZero[2] / Math.Sqrt(2.0))), 1.0 / 30.0));
+				OffsetFromZero[1] - (OffsetFromZero[2] / Math.Sqrt(2.0))), sec));
 
 			foreach (var child in Children)
-				child.Draw(scene);
+				child.Draw(scene, sec);
 		}
 
 		//private static Node FromBVHNodeImpl(BVH.BVHNode bvhNode, Node parent = null) {

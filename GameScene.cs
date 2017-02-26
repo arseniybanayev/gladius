@@ -1,6 +1,7 @@
 ﻿using SpriteKit;
 using UIKit;
 using CoreGraphics;
+using Foundation;
 using System;
 using System.Linq;
 using System.Collections;
@@ -11,7 +12,7 @@ namespace Gladius
 	public class GameScene : SKScene
 	{
 		public GameScene() {
-			AnchorPoint = new CGPoint(0.5, 0.0);
+			AnchorPoint = new CGPoint(0.5, 0.5);
 		}
 
 		private void AddAxes() {
@@ -96,7 +97,7 @@ namespace Gladius
 			}
 		}
 
-		private static readonly Random _random = new Random();
+		//private static readonly Random _random = new Random();
 
 		private readonly List<Point3D> _points = new List<Point3D>();
 
@@ -104,26 +105,30 @@ namespace Gladius
 			BackgroundColor = UIColor.White;
 			AddAxes();
 
-			var x = 1 + 2;
-			if (x == 2) {
-				// Demo 1: Rotate 100 randomly scattered points around any of the three axes
-				AddButtons();
+			//var x = 1 + 2;
+			//if (x == 2) {
+			//	// Demo 1: Rotate 100 randomly scattered points around any of the three axes
+			//	AddButtons();
 
-				_points.AddRange(Enumerable.Repeat(1, 100)
-					.Select(_ => new Point3D(
-									 (_random.NextDouble() - 0.5) * 100,
-									 (_random.NextDouble() - 0.5) * 100,
-									 (_random.NextDouble() - 0.5) * 100)));
-				foreach (var point in _points)
-					point.Draw(this);
-			} else {
-				// Demo 2: Play the BVH file
-				var bvh = new BVH("Male1_A1_Stand");
-				foreach (var root in bvh.Roots) {
-					root.Draw(this);
-					
-				}
-			}
+			//	_points.AddRange(Enumerable.Repeat(1, 100)
+			//		.Select(_ => new Point3D(
+			//						 (_random.NextDouble() - 0.5) * 100,
+			//						 (_random.NextDouble() - 0.5) * 100,
+			//						 (_random.NextDouble() - 0.5) * 100)));
+			//	foreach (var point in _points)
+			//		point.Draw(this);
+			//} else {
+			// Demo 2: Play the BVH file
+			_bvh = new BVH("Male1_A12_CrawlBackward");
+			_root = _bvh.Roots.First();
+			_root.Draw(this, _bvh.FrameTimeSecs);
+			NSTimer.CreateRepeatingScheduledTimer(_bvh.FrameTimeSecs, t => {
+				if (_bvh.PlayOneFrame())
+					_root.Draw(this, _bvh.FrameTimeSecs);
+			});
 		}
+
+		private BVH _bvh;
+		private Node _root;
 	}
 }

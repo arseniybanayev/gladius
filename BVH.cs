@@ -8,13 +8,13 @@ using MathNet.Numerics.LinearAlgebra.Double;
 namespace Gladius
 {
 	/// <summary>
-	/// Helper class that parses BVH files and constructs nodes with motion data.
+	/// Parses BVH files into nodes and a sequence of motions.
+	/// Exposes methods to execute each motion frame on the nodes.
 	/// </summary>
 	public class BVH
 	{
 		/// <summary>
-		/// Opens the specified BVH file and constructs nodes with motion data,
-		/// accessible by getting the Roots property.
+		/// Opens and parses the specified BVH file.
 		/// </summary>
 		public BVH(string bvhName) {
 			if (bvhName.EndsWith(".bvh", StringComparison.InvariantCultureIgnoreCase))
@@ -53,6 +53,48 @@ namespace Gladius
 		}
 
 		public List<Node> Roots { get; } = new List<Node>();
+
+		public bool PlayOneFrame() {
+			_frame++;
+			if (_channels.Any(kv => _frame >= kv.Key.Motions.Count))
+				return false;
+			
+			foreach (var kv in _channels) {
+				var current = kv.Key.Motions[_frame];
+				var last = _frame > 0 ? kv.Key.Motions[_frame - 1] : 0.0;
+				switch (kv.Key.Type) {
+					case MotionChannelType.Xposition:
+						kv.Value.Offset[0] = current;
+						break;
+					case MotionChannelType.Yposition:
+						kv.Value.Offset[1] = current;
+						break;
+					case MotionChannelType.Zposition:
+						kv.Value.Offset[2] = current;
+						break;
+					case MotionChannelType.Zrotation: {
+							kv.Value.ApplyTransformation(Transformation.Rotate(Plane.XY, current - last));
+							break;
+						}
+					case MotionChannelType.Xrotation: {
+							var degrees = kv.Key.Motions[_frame];
+							kv.Value.ApplyTransformation(Transformation.Rotate(Plane.YZ, current - last));
+							break;
+						}
+					case MotionChannelType.Yrotation: {
+							var degrees = kv.Key.Motions[_frame];
+							kv.Value.ApplyTransformation(Transformation.Rotate(Plane.XZ, current - last));
+							break;
+						}
+					default:
+						throw new NotSupportedException($"Motion channel type '{kv.Key.Type}' is not supported");
+				}
+			}
+
+			return true;
+		}
+
+		private int _frame = -1;
 
 		private Dictionary<MotionChannel, Node> _channels = new Dictionary<MotionChannel, Node>();
 
