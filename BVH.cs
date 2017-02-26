@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Foundation;
 using MathNet.Numerics.LinearAlgebra;
@@ -14,15 +15,12 @@ namespace Gladius
 	public class BVH
 	{
 		/// <summary>
-		/// Opens and parses the specified BVH file.
+		/// Opens and parses the BVH file at the specifie path.
 		/// </summary>
-		public BVH(string bvhName) {
-			if (bvhName.EndsWith(".bvh", StringComparison.InvariantCultureIgnoreCase))
-				bvhName = bvhName.Substring(0, bvhName.Length - 4);
-			var path = NSBundle.MainBundle.PathForResource(bvhName, "bvh");
+		public BVH(string path) {
 			var fm = new NSFileManager();
 			if (path == null || !fm.FileExists(path))
-				throw new Exception($"Could not find file '{bvhName}.bvh'.");
+				throw new Exception($"Could not find file '{Path.GetFileName(path)}'.");
 			var data = fm.Contents(path);
 			var contents = new NSString(data, NSStringEncoding.UTF8).ToString();
 			var lines = contents.Split(new[] { Environment.NewLine, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -137,7 +135,9 @@ namespace Gladius
 				.Select(double.Parse)
 				.ToArray();
 
-			var node = parent == null ? Node.NewRoot(new DenseVector(offsetParts)) : parent.CreateAndAddChild(new DenseVector(offsetParts));
+			var node = parent == null
+				? Node.NewRoot(new DenseVector(offsetParts), name)
+			    : parent.CreateAndAddChild(new DenseVector(offsetParts), name);
 			
 			if (!endSite) {
 				// fourth line, "CHANNELS ..."

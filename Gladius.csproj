@@ -124,10 +124,213 @@
     <Compile Include="MotionChannel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Male1_A1_Stand.bvh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <BundleResource Include="BVHs\Male1_A10_LieToCrouch.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>
-    <BundleResource Include="Male1_A12_CrawlBackward.bvh" />
+    <BundleResource Include="BVHs\Male1_A11_CrawlForward.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A12_CrawlBackward.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A13_Skipping.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A14_StandToSkip.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A15_SkipToStand_Take_001.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A1_Stand.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A2_Sway.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A3_SwingArms.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A4_LookAround.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A5_PickUpBox.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A6_LiftBox.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A7_Crouch.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A8_CrouchToLie.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_A9_LieDown.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B10_WalkTurnLeft45.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B11_WalkTurnLeft135.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B12_WalkTurnRight90.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B13_WalkTurnRight45.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B14_WalkTurnRight135.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B15_WalkTurnAround.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B16_WalkTrunChange.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B17_Walk2Hop2Walk.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B18_Walk2Leap2Walk.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B19_WalkToPickUpBox_Working.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B1_StandToWalk.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B20_WalkWithBox.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B21_PutDownBoxToWalk.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B22_SideStepLeft.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B23_SideStepRight.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B24_WalkToCrouch.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B25_CrouchToWalk.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B26_WalkToSkip.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B27_SkipToWalk.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B2_WalkToStand.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B3_Walk.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B4_StandToWalkBack.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B5_WalkBackToStand.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B6_WalkBackwards.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B7_WalkBackTurnForward.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B8_WalkBackToForward.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_B9_WalkToTurnLeft90.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C01_StandToRun.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C02_RunToStand.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C03_Run.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C04_RunToWalk.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C05_WalkToRun.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C06_StandToRunBack.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C07_RunBack.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C08_RunBackToStand.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C09_RunBackTurnRunForward.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C10_RunBackStopRunForward.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C11_RunTurnLeft90.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C12_RunTurnLeft45.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C13_RunTurnLeft135.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C14_RunTurnRight90.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C15_RunTurnRight45.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C16_RunTurnRight135.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C17_RunTurnAround.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C18_RunTurnChangeDirection.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C19_Run2Hop2Walk.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C20_Run2Jump2Walk.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C21_RunToPickupBox.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C22_RunWithBox.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C23_PutDownBoxToRun.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C24_QuickSideStepLeft.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C25_QuickSideStepRight.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C26_RunToCrouch.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="BVHs\Male1_C27_CrouchToRun.bvh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

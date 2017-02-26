@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using CoreGraphics;
 using SpriteKit;
@@ -22,15 +23,15 @@ namespace Gladius
 		/// <summary>
 		/// Creates an orphan/root node with the specified offset from the origin.
 		/// </summary>
-		public static Node NewRoot(Vector<double> offsetFromZero) => new Node(null, offsetFromZero);
+		public static Node NewRoot(Vector<double> offsetFromZero, string name) => new Node(null, offsetFromZero, name);
 
 		/// <summary>
 		/// Creates a new node with the specified offset from this node.
 		/// All transformations applied to this node will be applied to the
 		/// new child node, too.
 		/// </summary>
-		public Node CreateAndAddChild(Vector<double> offset) {
-			var newChild = new Node(this, offset);
+		public Node CreateAndAddChild(Vector<double> offset, string name) {
+			var newChild = new Node(this, offset, name);
 			_children.Add(newChild);
 			return newChild;
 		}
@@ -45,9 +46,15 @@ namespace Gladius
 		/// </summary>
 		public IEnumerable<Node> Children => _children;
 
-		private Node(Node parent, Vector<double> offset) {
+		/// <summary>
+		/// Optional identifier or name. No constraints; can be null.
+		/// </summary>
+		public string Name { get; }
+
+		private Node(Node parent, Vector<double> offset, string name = null) {
 			Parent = parent;
 			Offset = offset;
+			Name = name;
 		}
 
 		private readonly List<Node> _children = new List<Node>();
@@ -69,7 +76,7 @@ namespace Gladius
 					offset += node.Offset;
 				}
 
-				return offset / 3.0;
+				return offset / 1.5;
 			}
 		}
 
@@ -81,6 +88,8 @@ namespace Gladius
 			foreach (var child in Children)
 				child.ApplyTransformation(transformation);
 		}
+
+		public IEnumerable<SKNode> SkNodes => Children.SelectMany(c => c.SkNodes).Concat(new[] { _skNode });
 
 		private SKNode _skNode;
 		public void Draw(SKScene scene, double sec) {

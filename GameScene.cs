@@ -3,6 +3,7 @@ using UIKit;
 using CoreGraphics;
 using Foundation;
 using System;
+using System.IO;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,85 +48,41 @@ namespace Gladius
 			AddChild(zAxis);
 		}
 
-		private void AddButtons() {
-			var buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XY, -45));
-			buttonNode.Size = new CGSize(40, 40);
-			buttonNode.Position = new CGPoint(-200, -50);
-			AddChild(buttonNode);
+		private void PresentBVHMenu() {
+			var bvhFiles = NSBundle
+				.MainBundle
+				.PathsForResources("bvh", "BVHs")
+				.ToDictionary(Path.GetFileNameWithoutExtension);
+			for (var i = 0; i < bvhFiles.Count; i++) {
+				var bvhFile = bvhFiles.ElementAt(i);
+				var label = SKButtonNode.WithText(bvhFile.Key, () => {
+					LoadBvh(bvhFile.Value);
+				});
 
-			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XY, 45));
-			buttonNode.XScale = (nfloat)(-1.0);
-			buttonNode.ZRotation = (nfloat)(-90.0).ToRadians();
-			buttonNode.Size = new CGSize(40, 40);
-			buttonNode.Position = new CGPoint(-150, -50);
-			AddChild(buttonNode);
-
-			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.YZ, -45));
-			buttonNode.ZRotation = (nfloat)135.0.ToRadians();
-			buttonNode.Size = new CGSize(40, 40);
-			buttonNode.Position = new CGPoint(-200, 0);
-			AddChild(buttonNode);
-
-			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.YZ, 45));
-			buttonNode.ZRotation = (nfloat)45.0.ToRadians();
-			buttonNode.XScale = (nfloat)(-1.0);
-			buttonNode.Size = new CGSize(40, 40);
-			buttonNode.Position = new CGPoint(-150, 0);
-			AddChild(buttonNode);
-
-			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XZ, 45));
-			buttonNode.ZRotation = (nfloat)(-135.0).ToRadians();
-			buttonNode.Size = new CGSize(40, 40);
-			buttonNode.Position = new CGPoint(-200, 50);
-			AddChild(buttonNode);
-
-			buttonNode = new SKButtonNode("Rotate", () => Rotate(Plane.XZ, -45));
-			buttonNode.ZRotation = (nfloat)135.0.ToRadians();
-			buttonNode.XScale = (nfloat)(-1.0);
-			buttonNode.Size = new CGSize(40, 40);
-			buttonNode.Position = new CGPoint(-150, 50);
-			AddChild(buttonNode);
-		}
-
-		private void Rotate(Plane plane, double degrees) {
-			foreach (var point in _points) {
-				var vector = point.Subtract(Point3D.Zero).Rotate(plane, degrees);
-				var zero = Point3D.Zero;
-				zero.Add(vector);
-				point.MoveTo(zero);
-				point.Draw(this);
+				label.Position = new CGPoint(-200, 75 - (i * 20));
+				AddChild(label);
 			}
 		}
 
-		//private static readonly Random _random = new Random();
+		private void LoadBvh(string bvhName) {
+			if (_root != null)
+				RemoveChildren(_root.SkNodes.ToArray());
 
-		private readonly List<Point3D> _points = new List<Point3D>();
-
-		public override void DidMoveToView(SKView view) {
-			BackgroundColor = UIColor.White;
-			AddAxes();
-
-			//var x = 1 + 2;
-			//if (x == 2) {
-			//	// Demo 1: Rotate 100 randomly scattered points around any of the three axes
-			//	AddButtons();
-
-			//	_points.AddRange(Enumerable.Repeat(1, 100)
-			//		.Select(_ => new Point3D(
-			//						 (_random.NextDouble() - 0.5) * 100,
-			//						 (_random.NextDouble() - 0.5) * 100,
-			//						 (_random.NextDouble() - 0.5) * 100)));
-			//	foreach (var point in _points)
-			//		point.Draw(this);
-			//} else {
-			// Demo 2: Play the BVH file
-			_bvh = new BVH("Male1_A12_CrawlBackward");
+			_bvh = new BVH(bvhName);
 			_root = _bvh.Roots.First();
 			_root.Draw(this, _bvh.FrameTimeSecs);
 			NSTimer.CreateRepeatingScheduledTimer(_bvh.FrameTimeSecs, t => {
 				if (_bvh.PlayOneFrame())
 					_root.Draw(this, _bvh.FrameTimeSecs);
 			});
+		}
+
+		public override void DidMoveToView(SKView view) {
+			BackgroundColor = UIColor.White;
+			//AddAxes();
+
+			PresentBVHMenu();
+
 		}
 
 		private BVH _bvh;
